@@ -1,21 +1,19 @@
-from django.db import models
-from django.urls import reverse
-from django.core.validators import MinValueValidator, MaxValueValidator
 
-# Create your models here.
+from django.db import models
+from django.utils.text import slugify
+
 
 class Category(models.Model):
-    name = models.CharField(
-        max_length=100,
-        unique=True
-    )
-    slug = models.SlugField(
-        max_length=100,
-        unique=True
-    )
+    name = models.CharField(max_length=255, unique=True)
+    slug = models.SlugField(max_length=255, unique=True, blank=True)
 
     class Meta:
-        ordering = ('-name',)
+        ordering = ['name']
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -24,46 +22,26 @@ class Category(models.Model):
 class Meal(models.Model):
     category = models.ForeignKey(
         Category,
-        related_name='meals',
-        on_delete=models.CASCADE
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='meals'
     )
-    name = models.CharField(max_length=100, unique=True)
-    slug = models.SlugField(max_length=100, unique=True)
-    image = models.ImageField(upload_to='meals/')
-    description = models.TextField()
-    shu = models.CharField(max_length=10)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    name = models.CharField(max_length=255, unique=True)
+    description = models.TextField(blank=True)
+    price = models.DecimalField(max_digits=8, decimal_places=2)
+    slug = models.SlugField(max_length=255, unique=True, blank=True)
     available = models.BooleanField(default=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ('-name',)
-        verbose_name_plural = 'categories'
+        ordering = ['-created']
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
-
-    def get_absolute_url(self):
-        return reverse(
-            'mealworld:meal_list_by_category',
-            args=[self.slug]
-        )
-
-
-class Review(models.Model):
-    meal = models.ForeignKey(
-        Meal,
-        related_name='reviews',
-        on_delete=models.CASCADE
-    )
-    author = models.CharField(max_length=50)
-    rating = models.IntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(5)]
-    )
-    text = models.TextField(blank=True)
-    created = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        ordering = ('-created',)
-
-    def __str__(self):
-        return f"Review by {self.author} for {self.meal.name}"
