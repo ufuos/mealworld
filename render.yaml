@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: yourproject-web
+    env: python
+    region: oregon
+    repo: https://github.com/your/repo
+    branch: main
+    buildCommand: ./build.sh
+    startCommand: gunicorn yourproject.wsgi --config gunicorn.config.py
+    envVars:
+      - key: SECRET_KEY
+        from: env
+      - key: DEBUG
+        from: env
+      - key: ALLOWED_HOSTS
+        from: env
+
+databases:
+  - name: yourproject-db
+    plan: starter

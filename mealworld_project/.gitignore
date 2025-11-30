@@ -1,0 +1,12 @@
+mealworld_project/local_settings.py
+*.log
+ *.pot
+ *.pyc
+ __pycache__/
+ db.sqlite3
+ db.sqlite3-journal
+ .vscode
+ static
+ media
+ env
+ 

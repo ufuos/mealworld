@@ -1,0 +1,246 @@
+{
+  "info": {
+    "name": "MealWorld - Basic Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Example requests for accounts, listings, cart, orders. Replace {{base_url}} with your API base URL."
+  },
+  "item": [
+    {
+      "name": "Accounts / Register",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"testuser\",\n  \"email\": \"test@example.com\",\n  \"password\": \"Password123\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/accounts/register/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "accounts",
+            "register",
+            ""
+          ]
+        }
+      }
+    },
+    {
+      "name": "Accounts / Login (get tokens)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"Password123\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/accounts/login/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "accounts",
+            "login",
+            ""
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('login returns tokens', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "let json = {};",
+              "try { json = pm.response.json(); } catch (e) { }",
+              "if (json.access) {",
+              "    pm.environment.set('access_token', json.access);",
+              "}",
+              "if (json.refresh) {",
+              "    pm.environment.set('refresh_token', json.refresh);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Listings / GET all",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/listings/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "listings",
+            ""
+          ]
+        }
+      }
+    },
+    {
+      "name": "Listings / POST create (auth required)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Test Item\",\n  \"description\": \"A simple test listing\",\n  \"price\": 9.99\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/listings/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "listings",
+            ""
+          ]
+        }
+      }
+    },
+    {
+      "name": "Cart / GET cart",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/cart/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "cart",
+            ""
+          ]
+        }
+      }
+    },
+    {
+      "name": "Cart / POST add item",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"listing_id\": 1,\n  \"quantity\": 1\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/cart/add/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "cart",
+            "add",
+            ""
+          ]
+        }
+      }
+    },
+    {
+      "name": "Orders / GET my orders",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/orders/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "orders",
+            ""
+          ]
+        }
+      }
+    },
+    {
+      "name": "Orders / POST create order",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"cart_id\": 1,\n  \"shipping_address\": \"123 Main St\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/orders/create/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "orders",
+            "create",
+            ""
+          ]
+        }
+      }
+    }
+  ]
+}
