@@ -24,7 +24,7 @@ urlpatterns = [
 
     # Main API routes
     path('api/', include('mealworld_project.api_urls')),  # ← You requested this
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 # Serve media files in development
 if settings.DEBUG:
