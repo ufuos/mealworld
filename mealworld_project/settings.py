@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'django_filters',
     'corsheaders',
+    'api',
 
     # ⭐ ADDED FOR API DOCUMENTATION
     'drf_spectacular',
