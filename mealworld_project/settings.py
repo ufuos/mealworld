@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django_filters',
     'corsheaders',
     'api',
+    'rest_framework.authtoken',
 
     # ⭐ ADDED FOR API DOCUMENTATION
     'drf_spectacular',
